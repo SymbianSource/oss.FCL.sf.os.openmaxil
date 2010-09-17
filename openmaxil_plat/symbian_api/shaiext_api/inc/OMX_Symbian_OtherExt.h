@@ -33,7 +33,7 @@ extern "C" {
  * header to compile without errors.  The includes below are required
  * for this header file to compile successfully 
  */
-#include <OMX_Core.h>
+#include <openmax/il/khronos/v1_x/OMX_Core.h>
 
 
 /** @name Extradata extension */

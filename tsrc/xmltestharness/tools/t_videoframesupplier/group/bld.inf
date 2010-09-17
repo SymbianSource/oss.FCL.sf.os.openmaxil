@@ -20,7 +20,7 @@ DEFAULT
 ARMv6
 
 PRJ_TESTEXPORTS
-..\inc\t_videoframesupplier.h SYMBIAN_OS_LAYER_PLATFORM_EXPORT_PATH(multimedia/t_videoframesupplier.h)
+../inc/t_videoframesupplier.h SYMBIAN_OS_LAYER_PLATFORM_EXPORT_PATH(multimedia/t_videoframesupplier.h)
 t_videoframesupplier.iby /epoc32/rom/include/t_videoframesupplier.iby
 
 PRJ_TESTMMPFILES

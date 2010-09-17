@@ -28,9 +28,9 @@ PRJ_EXPORTS
 ../OMX_ContentPipe.h		SYMBIAN_OS_LAYER_PLATFORM_EXPORT_PATH(openmax/il/khronos/v1_x/OMX_ContentPipe.h)
 
 //
-// Files above are listed in \epoc32\tools\filenamepolicyexclusions.txt.
+// Files above are listed in /epoc32/tools/filenamepolicyexclusions.txt.
 // They are exported in CamelCase instead of lower case.
 // If a new header is added to the export, e.g. OMX_ContentPipe.h, the name
 // should be added to filenamepolicyexclusions.txt ahead of time. Otherwise
 // checksource will flag it as error.
-// filenamepolicyexclusions.txt is in \src\cedar\generic\tools\e32toolp\platform
+// filenamepolicyexclusions.txt is in /src/cedar/generic/tools/e32toolp/platform

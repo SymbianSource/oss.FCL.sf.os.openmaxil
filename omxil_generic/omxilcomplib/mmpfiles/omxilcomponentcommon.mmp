@@ -50,7 +50,6 @@ SOURCE                  omxilotherportimpl.cpp
 SOURCE                  omxilclientclockport.cpp
 
 LIBRARY                 euser.lib
-LIBRARY					mmfserverbaseclasses.lib
 
 // Uncomment to activate debug tracing in this module
 //MACRO                   _OMXIL_COMMON_DEBUG_TRACING_ON

@@ -33,9 +33,9 @@ extern "C" {
  * header to compile without errors.  The includes below are required
  * for this header file to compile successfully 
  */
-#include <OMX_Types.h>
-#include <OMX_Audio.h>
-#include <OMX_Symbian_OtherExt.h>
+#include <openmax/il/khronos/v1_x/OMX_Types.h>
+#include <openmax/il/khronos/v1_x/OMX_Audio.h>
+#include <openmax/il/shai/OMX_Symbian_OtherExt.h>
 
 
 /** @name Generic Audio Control Definitions. */
@@ -1222,6 +1222,19 @@ typedef struct OMX_SYMBIAN_AUDIO_CONFIG_HWLOOPCONTROLTYPE  {
     OMX_BOOL bLinear;
     OMX_BS32 sLoopVolume;
 } OMX_SYMBIAN_AUDIO_CONFIG_HWLOOPCONTROLTYPE;
+
+/** Audio Processed Data Amount.
+
+The index specified for this structure is retrieved using 
+OMX_GetExtensionIndex() with the extension string 
+"OMX.Symbian.Index.Config.Audio.DataAmount".
+*/
+typedef struct OMX_SYMBIAN_AUDIO_CONFIG_PROCESSEDDATAAMOUNTTYPE {
+    OMX_U32 nSize;
+    OMX_VERSIONTYPE nVersion;
+    OMX_U32 nPortIndex;
+    OMX_TICKS nProcessedDataAmount;
+} OMX_SYMBIAN_AUDIO_CONFIG_PROCESSEDDATAAMOUNTTYPE; 
 
 /*@}*/
 

@@ -80,6 +80,7 @@ extern "C" {
 #define OMX_SYMBIAN_INDEX_CONFIG_AUDIO_CUSTOMHWCONTROL_NAME             "OMX.Symbian.Index.Config.Audio.CustomHwControl"
 #define OMX_SYMBIAN_INDEX_CONFIG_AUDIO_HWLOOPSUPPORT_NAME               "OMX.Symbian.Index.Config.Audio.HwLoopSupport"
 #define OMX_SYMBIAN_INDEX_CONFIG_AUDIO_HWLOOPCONTROL_NAME               "OMX.Symbian.Index.Config.Audio.HwLoopControl"
+#define OMX_SYMBIAN_INDEX_CONFIG_AUDIO_DATAAMOUNT_NAME                  "OMX.Symbian.Index.Config.Audio.DataAmount"
 #define OMX_SYMBIAN_INDEX_CONFIG_AUDIO_DECODERSTATUS_NAME               "OMX.Symbian.Index.Config.Audio.DecoderStatus"
 #define OMX_SYMBIAN_INDEX_CONFIG_AUDIO_ENCODERSTATUS_NAME               "OMX.Symbian.Index.Config.Audio.EncoderStatus"
 #define OMX_SYMBIAN_INDEX_CONFIG_AUDIO_UPLINKTIMIMG_NAME                "OMX.Symbian.Index.Config.Audio.UplinkTiming"

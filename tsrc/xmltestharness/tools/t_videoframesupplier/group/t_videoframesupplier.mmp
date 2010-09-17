@@ -22,9 +22,9 @@ CAPABILITY	All -TCB
 
 OS_LAYER_SYSTEMINCLUDE_SYMBIAN
 
-USERINCLUDE	 ..\inc
+USERINCLUDE	 ../inc
 
-SOURCEPATH	  ..\src
+SOURCEPATH	  ../src
 
 SOURCE		  t_videoframesupplier.cpp
 SOURCE		  t_videoframesupplierDllMain.cpp

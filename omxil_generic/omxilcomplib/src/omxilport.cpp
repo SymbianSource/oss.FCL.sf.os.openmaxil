@@ -19,9 +19,6 @@
  @internalComponent
 */
 
-#include <mmf/server/mmfbuffer.h>
-#include <mmf/server/mmfdatabuffer.h>
-
 #include "log.h"
 #include "omxilportimpl.h"
 #include <openmax/il/common/omxilport.h>
@@ -393,7 +390,7 @@ COmxILPort::IsBufferAtHome(OMX_BUFFERHEADERTYPE* apBufferHeader) const
 OMX_ERRORTYPE
 COmxILPort::DoBufferAllocation(OMX_U32 aSizeBytes,
 							   OMX_U8*& apPortSpecificBuffer,
-							   OMX_PTR& apPortPrivate,
+							   OMX_PTR& /*apPortPrivate*/,
 							   OMX_PTR& /* apPlatformPrivate */,
 							   OMX_PTR /* apAppPrivate = 0 */)
 	{
@@ -401,18 +398,13 @@ COmxILPort::DoBufferAllocation(OMX_U32 aSizeBytes,
 
 	__ASSERT_DEBUG(aSizeBytes > 0, User::Panic(KOmxILPortPanicCategory, 1));
 
-	CMMFDescriptorBuffer* pDescBuffer = 0;
-	TRAPD(allocRes, pDescBuffer = CMMFDescriptorBuffer::NewL(aSizeBytes));
-	if (KErrNone != allocRes)
+	apPortSpecificBuffer = new OMX_U8[aSizeBytes];
+	if (!apPortSpecificBuffer)
 		{
 		return OMX_ErrorInsufficientResources;
 		}
 
-	apPortSpecificBuffer = const_cast<TUint8*>(pDescBuffer->Data().Ptr());
-	apPortPrivate		 = static_cast<CMMFBuffer*>(pDescBuffer);
-
 	return OMX_ErrorNone;
-
 	}
 
 /**
@@ -433,17 +425,16 @@ COmxILPort::DoBufferAllocation(OMX_U32 aSizeBytes,
 
 */
 void
-COmxILPort::DoBufferDeallocation(OMX_PTR /*apPortSpecificBuffer */,
-								 OMX_PTR apPortPrivate,
+COmxILPort::DoBufferDeallocation(OMX_PTR apPortSpecificBuffer ,
+								 OMX_PTR /*apPortPrivate*/,
 								 OMX_PTR /* apPlatformPrivate */,
 								 OMX_PTR /* apAppPrivate = 0 */)
 	{
 	DEBUG_PRINTF(_L8("COmxILPort::DoBufferDeallocation"));
 
-	__ASSERT_DEBUG(apPortPrivate, User::Panic(KOmxILPortPanicCategory, 1));
+	__ASSERT_DEBUG(apPortSpecificBuffer, User::Panic(KOmxILPortPanicCategory, 1));
 
-	delete reinterpret_cast<CMMFBuffer*>(apPortPrivate);
-
+	delete[] apPortSpecificBuffer;
 	}
 
 /**
@@ -467,29 +458,15 @@ COmxILPort::DoBufferDeallocation(OMX_PTR /*apPortSpecificBuffer */,
    @return OMX_ERRORTYPE
 */
 OMX_ERRORTYPE
-COmxILPort::DoBufferWrapping(OMX_U32 aSizeBytes,
-							 OMX_U8* apBuffer,
-							 OMX_PTR& apPortPrivate,
+COmxILPort::DoBufferWrapping(OMX_U32 /*aSizeBytes*/,
+							 OMX_U8* /*apBuffer*/,
+							 OMX_PTR& /*apPortPrivate*/,
 							 OMX_PTR& /* apPlatformPrivate */,
 							 OMX_PTR /* apAppPrivate = 0 */)
 	{
 	DEBUG_PRINTF(_L8("COmxILPort::DoBufferWrapping"));
-
-	__ASSERT_DEBUG(aSizeBytes > 0 && apBuffer,
-				   User::Panic(KOmxILPortPanicCategory, 1));
-
-	CMMFBuffer* pMmfBuffer = 0;
-	TPtr8 ptr(apBuffer, aSizeBytes, aSizeBytes);
-	TRAPD(allocRes, pMmfBuffer = CMMFPtrBuffer::NewL(ptr));
-	if (KErrNone != allocRes)
-		{
-		return OMX_ErrorInsufficientResources;
-		}
-
-	apPortPrivate = pMmfBuffer;
-
+	// Does nothing, to be overloaded by Components if they require 
 	return OMX_ErrorNone;
-
 	}
 
 /**
@@ -509,17 +486,13 @@ COmxILPort::DoBufferWrapping(OMX_U32 aSizeBytes,
 */
 void
 COmxILPort::DoBufferUnwrapping(OMX_PTR /* apBuffer*/,
-							   OMX_PTR appPortPrivate,
+							   OMX_PTR /*appPortPrivate*/,
 							   OMX_PTR /* apPlatformPrivate */,
 							   OMX_PTR /* apAppPrivate = 0 */)
 	{
-
 	DEBUG_PRINTF(_L8("COmxILPort::DoBufferUnwrapping"));
-
-	__ASSERT_DEBUG(appPortPrivate, User::Panic(KOmxILPortPanicCategory, 1));
-
-	delete reinterpret_cast<CMMFBuffer*>(appPortPrivate);
-
+	// Does nothing, to be overloaded by Components if they have their own 
+	// DoBufferWrapping function 
 	}
 
 /**

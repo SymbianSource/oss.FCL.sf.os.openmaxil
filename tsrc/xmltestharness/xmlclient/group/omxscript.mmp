@@ -23,7 +23,7 @@ CAPABILITY MultimediaDD UserEnvironment ReadUserData WriteUserData WriteDeviceDa
 
 OS_LAYER_SYSTEMINCLUDE_SYMBIAN
 
-SOURCEPATH	  ..\src
+SOURCEPATH	  ../src
 SOURCE		  omxscript.cpp
 
 LIBRARY		 euser.lib

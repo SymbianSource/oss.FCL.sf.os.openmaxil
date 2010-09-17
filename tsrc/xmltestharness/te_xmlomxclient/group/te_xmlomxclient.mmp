@@ -23,9 +23,9 @@ CAPABILITY ALL -TCB
 
 OS_LAYER_SYSTEMINCLUDE_SYMBIAN
 
-USERINCLUDE ..\src
+USERINCLUDE ../src
 
-SOURCEPATH ..\src
+SOURCEPATH ../src
 SOURCE te_xmlomxclient.cpp
 SOURCE omxxmltestblockcontroller.cpp
 SOURCE omxxmltestwrapper.cpp
