@@ -653,47 +653,6 @@ COmxILPortManager::SetConfig(OMX_INDEXTYPE aConfigIndex,
 	{
 	DEBUG_PRINTF(_L8("COmxILPortManager::SetConfig"));
 
-#ifdef _OMXIL_COMMON_IL516C_ON
-
-	if (OMX_IndexConfigPortBufferReturnRequest == aConfigIndex)
-		{
-		OMX_U32 portIndex;
-		if (OMX_ErrorNone != GetPortIndexFromOmxStruct(
-				apComponentConfigStructure,
-				portIndex))
-			{
-			return OMX_ErrorBadPortIndex;
-			}
-		DEBUG_PRINTF2(_L8("COmxILPortManager::SetConfig : PORT[%u] OMX_IndexConfigPortBufferReturnRequest"), portIndex);
-
-		// Check the index of the port..
-		if ((OMX_ALL != portIndex) &&
-			(CheckPortIndex(portIndex) != OMX_ErrorNone))
-			{
-			return OMX_ErrorBadPortIndex;
-			}
-
-		// This error will be ignored...
-		OMX_ERRORTYPE omxRetValue = OMX_ErrorNone;
-		if (portIndex != OMX_ALL)
-			{
-			omxRetValue = BufferEjectIndication(portIndex);
-			}
-		else
-			{
-			const TInt portCount = iAllPorts.Count();
-
-			for (TUint i = 0; i< portCount; ++i)
-				{
-				omxRetValue = BufferEjectIndication(iAllPorts[i]->Index());
-				}
-			}
-
-		return OMX_ErrorNone;
-
-		}
-#endif
-
 	TInt index = FindConfigIndex(aConfigIndex);
 	if (KErrNotFound == index)
 		{
@@ -775,22 +734,6 @@ COmxILPortManager::PopulateBuffer(OMX_BUFFERHEADERTYPE** appBufferHdr,
 	// Grab the port here...
 	COmxILPort* pPort = iAllPorts[aPortIndex];
 
-#ifdef _OMXIL_COMMON_IL516C_ON
-	if (!apBuffer)
-		{
-		// Basically, if OMX_UseBuffer is used, the port must not be populated
-		// at this point, otherwise it is an error...
-		if (pPort->IsPopulated())
-			{
-			return OMX_ErrorIncorrectStateOperation;
-			}
-		}
-	else
-		{
-		// ... AllocateBuffer... this is only allowed if the the IL Client has
-		// issued the command to idle already..
-#endif
-
 	if (OMX_TRUE == aPortIsDisabled &&
 		pPort->IsEnabled() &&
 		!pPort->IsTransitioningToEnabled())
@@ -801,10 +744,6 @@ COmxILPortManager::PopulateBuffer(OMX_BUFFERHEADERTYPE** appBufferHdr,
 		// case the buffer population must be allowed...
 		return OMX_ErrorIncorrectStateOperation;
 		}
-
-#ifdef _OMXIL_COMMON_IL516C_ON
-		}
-#endif
 
 	// Check that in case of tunnelling, this port is not buffer supplier...
 	if (pPort->IsTunnelledAndBufferSupplier())
@@ -1327,34 +1266,22 @@ COmxILPortManager::BufferIndication(
 		return OMX_ErrorBadPortIndex;
 		}
 
-#ifdef _OMXIL_COMMON_IL516C_ON
-	(void)aPortIsDisabled;
-	// Only restriction here is that the port must be populated
-	if (!pPort->IsPopulated())
-		{
-		return OMX_ErrorIncorrectStateOperation;
-		}
-#endif
-
-#ifndef _OMXIL_COMMON_IL516C_ON
 	if (!pPort->IsEnabled() &&
-		!pPort->IsTransitioningToDisabled() &&
-		!pPort->IsTransitioningToEnabled())
-		{
-		return OMX_ErrorIncorrectStateOperation;
-		}
+            !pPort->IsTransitioningToDisabled() &&
+            !pPort->IsTransitioningToEnabled())
+            {
+            return OMX_ErrorIncorrectStateOperation;
+            }
 
 	// Check port enabled property...
 	if (OMX_TRUE == aPortIsDisabled &&
-		pPort->IsEnabled())
-		{
-		// There is an indication from the FSM that the port must be disabled,
-		// otherwise, the buffer indication is not allowed in the current
-		// state.
-		return OMX_ErrorIncorrectStateOperation;
-		}
-
-#endif
+            pPort->IsEnabled())
+            {
+            // There is an indication from the FSM that the port must be disabled,
+            // otherwise, the buffer indication is not allowed in the current
+            // state.
+            return OMX_ErrorIncorrectStateOperation;
+            }
 
 	OMX_ERRORTYPE omxRetValue = OMX_ErrorNone;
 	// Check whether this port is a buffer supplier...
@@ -1402,27 +1329,6 @@ COmxILPortManager::BufferIndication(
 		return OMX_ErrorNone;
 
 		} // if ((pPort->IsTunnelledAndBufferSupplier() && pPort->IsTransitioningToDisabled())
-#ifdef _OMXIL_COMMON_IL516C_ON
-	else if (pPort->IsTunnelled() && pPort->IsTransitioningToDisabled())
-		{
-		// We get here if the port is tunnelled, non-supplier and is currently
-		// in the process of transitioning to disabled...  To avoid Race
-		// condition #3, we need to check that we've received the request from
-		// the supplier to return its buffers... however, we don't check it for
-		// now, it is just easier to return the buffer now...
-		DEBUG_PRINTF3(_L8("COmxILPortManager::BufferIndication : PORT [%u] BUFFER [%X] : "
-						  "WARNING This port is being disabled, "
-						  "the buffer id being returned to the tunnelled component"),
-						  portIndex, apBufferHeader);
-		omxRetValue =
-			iCallbacks.BufferDoneNotification(apBufferHeader,
-											  portIndex,
-											  aDirection);
-		// ... we are done..
-		return OMX_ErrorNone;
-		}
-#endif
-
 
 	// Inform the port that one of its buffers is going to be sent to the
 	// processing function (exception applies to OMX_PortDomainOther ports) ... 
@@ -1692,18 +1598,9 @@ COmxILPortManager::BufferFlushIndicationPauseOrExeToIdleCommand(
 					// This port will have to wait to get some of its buffers
 					// returned by the tunnelled port...
 					foundBufferSupplierThatNeedsToWait = ETrue;
-#ifdef _OMXIL_COMMON_IL516C_ON
-					// Request buffer ejection from the tunnelled component
-					iCallbacks.EjectBuffersRequest(pPort->Index());
-#endif
 					}
 				continue;
 				}
-
-#ifdef _OMXIL_COMMON_IL516C_ON
-			if (!pPort->IsTunnelled())
-				{
-#endif
 
 			if (OMX_ErrorNone !=
 				(omxRetValue = iProcessingFunction.BufferFlushingIndication(
@@ -1712,10 +1609,6 @@ COmxILPortManager::BufferFlushIndicationPauseOrExeToIdleCommand(
 				{
 				return omxRetValue;
 				}
-
-#ifdef _OMXIL_COMMON_IL516C_ON
-				}
-#endif
 
 			}
 		}
@@ -1919,10 +1812,6 @@ COmxILPortManager::PortDisableIndication(
 				pPort->SetTransitionToDisabled();
 				// This port will have to wait to get all its buffers
 				// returned by the tunnelled port...
-#ifdef _OMXIL_COMMON_IL516C_ON
-				//... but request the ejection of the buffers first...
-				iCallbacks.EjectBuffersRequest(pPort->Index());
-#endif
 				}
 			else
 				{
@@ -1963,11 +1852,6 @@ COmxILPortManager::PortDisableIndication(
 			if (pPort->Count() > 0)
 				{
 
-#ifdef _OMXIL_COMMON_IL516C_ON
-			if (!pPort->IsTunnelled())
-				{
-#endif
-
 				if (OMX_ErrorNone !=
 					(omxRetValue =
 					 iProcessingFunction.BufferFlushingIndication(
@@ -1976,10 +1860,6 @@ COmxILPortManager::PortDisableIndication(
 					{
 					return omxRetValue;
 					}
-
-#ifdef _OMXIL_COMMON_IL516C_ON
-				}
-#endif
 
 				// Inform the port that it is being disabled
 				pPort->SetTransitionToDisabled();
@@ -2037,34 +1917,6 @@ COmxILPortManager::BufferMarkIndication(
 	return iAllPorts[aPortIndex]->StoreBufferMark(pMark);
 
 	}
-
-#ifdef _OMXIL_COMMON_IL516C_ON
-OMX_ERRORTYPE
-COmxILPortManager::BufferEjectIndication(
-	TUint32 aPortIndex)
-	{
-    DEBUG_PRINTF2(_L8("COmxILPortManager::BufferEjectIndication: PORT[%u] "), aPortIndex);
-
-	// Check the index of the port..
-	if (CheckPortIndex(aPortIndex) != OMX_ErrorNone)
-		{
-		return OMX_ErrorBadPortIndex;
-		}
-
-	OMX_ERRORTYPE omxRetValue = OMX_ErrorNone;
-	COmxILPort* pPort = iAllPorts[aPortIndex];
-
-	if (pPort->Count())
-		{
-		omxRetValue = iProcessingFunction.BufferFlushingIndication(
-			pPort->Index(),
-			pPort->Direction());
-		}
-
-	return omxRetValue;
-
-	}
-#endif
 
 OMX_ERRORTYPE
 COmxILPortManager::ComponentRoleIndication(TUint aComponentRoleIndex)

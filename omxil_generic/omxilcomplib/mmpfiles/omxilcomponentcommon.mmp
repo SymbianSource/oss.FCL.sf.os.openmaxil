@@ -62,10 +62,6 @@ LIBRARY                 euser.lib
 // Uncomment to activate spec version checks in OMX IL structs
 //MACRO                   _OMXIL_COMMON_SPEC_VERSION_CHECKS_ON
 
-// Uncomment to activate the "alternatives to App Note IL #318"
-// See IL516c_Issue#1-Race-Conditions-Solutions-for-1.y_Nokia.pdf
-// MACRO                   _OMXIL_COMMON_IL516C_ON
-
 
 NOSTRICTDEF
 

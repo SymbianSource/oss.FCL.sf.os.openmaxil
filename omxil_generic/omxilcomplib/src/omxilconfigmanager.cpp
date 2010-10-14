@@ -187,8 +187,15 @@ RArray<TUint>& COmxILConfigManager::ManagedConfigIndexes()
     __ASSERT_ALWAYS(ipConfigManagerImpl, User::Panic(KOmxILConfigManagerPanicCategory, 1));
     return ipConfigManagerImpl->ManagedConfigIndexes();
     }
+
+#ifndef __WINSCW__
+#pragma CTC SKIP
+#endif
 EXPORT_C
 TInt COmxILConfigManager::Extension_(TUint aExtensionId, TAny *&a0, TAny *a1)
 	{
 	return CBase::Extension_(aExtensionId, a0, a1);
 	}
+#ifndef __WINSCW__
+#pragma CTC ENDSKIP 
+#endif 

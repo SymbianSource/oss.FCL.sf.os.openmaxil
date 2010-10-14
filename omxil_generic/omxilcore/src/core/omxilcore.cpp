@@ -205,30 +205,26 @@ EXPORT_C OMX_ERRORTYPE COmxILCore::LoadComponent(
             Ost_OMXIL_Performance::EMeasurementStart, MAKESTRING(E_GetHandle)); 
 #endif
     
-    
-    if(error ==  OMX_ErrorNone)
+    if(!aHandle || !aComponentName)
         {
-        if(!aHandle || !aComponentName)
+        error = OMX_ErrorBadParameter;
+        }
+    else
+        {
+        if( !VerifyComponentName(aComponentName))
             {
-            error = OMX_ErrorBadParameter;
+            error = OMX_ErrorInvalidComponentName;
             }
         else
             {
-            if( !VerifyComponentName(aComponentName))
-                {
-                error = OMX_ErrorInvalidComponentName;
-                }
-            else
-                {
 #ifdef ENABLE_OMXIL_TRACING 
-                TRAPD(Err, OMXILAPITraceWrapper::PrepareTraceStructuresL(hClientHandle, pLocCallBacks, pCompRefToClient, pCompRefToTrace) );
-                if(Err != KErrNone)
-                    {
-                    IsPrepareTraceStructuresLFailure = ETrue;
-                    error = OMX_ErrorInsufficientResources;
-                    }
-#endif
+            TRAPD(Err, OMXILAPITraceWrapper::PrepareTraceStructuresL(hClientHandle, pLocCallBacks, pCompRefToClient, pCompRefToTrace) );
+            if(Err != KErrNone)
+                {
+                IsPrepareTraceStructuresLFailure = ETrue;
+                error = OMX_ErrorInsufficientResources;
                 }
+#endif
             }
         }
 

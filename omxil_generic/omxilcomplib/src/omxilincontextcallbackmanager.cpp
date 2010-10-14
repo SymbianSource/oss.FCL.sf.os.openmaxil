@@ -647,19 +647,6 @@ COmxILInContextCallbackManager::PortSettingsChangeNotification(
 
 	}
 
-#ifdef _OMXIL_COMMON_IL516C_ON
-OMX_ERRORTYPE
-COmxILInContextCallbackManager::EjectBuffersRequest(
-	OMX_U32 aLocalOmxPortIndex)
-	{
-    DEBUG_PRINTF2(_L8("COmxILInContextCallbackManager::EjectBuffersRequest : aLocalOmxPortIndex[%d]"), aLocalOmxPortIndex);
-
-	OMX_ERRORTYPE omxError = DoEjectBuffersRequest(aLocalOmxPortIndex);
-	return omxError;
-
-	}
-#endif
-
 void
 COmxILInContextCallbackManager::FlushQueue(
 	RCbMgrBufferQueue& aQueue)

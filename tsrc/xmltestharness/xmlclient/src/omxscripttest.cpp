@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2008-2009 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2008-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -1143,6 +1143,34 @@ TBool ROmxScriptTest::MosSetCameraCaptureL(const TDesC8& aComp, TInt aPortIndex,
     return ETrue;
     }
 
+TBool ROmxScriptTest::MosSetVideoPortFormatsL(const TDesC8& aComp, TInt aPortIndex, OMX_COLOR_FORMATTYPE* aColorFormat, OMX_VIDEO_CODINGTYPE* aCodingType, TInt aFramerate, OMX_ERRORTYPE aExpectedError)
+	{
+	OMX_COMPONENTTYPE* component = ComponentByName(aComp);
+	if(!component)
+		{
+		return EFalse;
+		}
+
+	INFO_PRINTF1(_L("MosSetVideoPortFormatsL"));
+
+	OMX_VIDEO_PARAM_PORTFORMATTYPE format;
+
+	format.nSize = sizeof(format);
+	format.nVersion = KOmxVersion;
+	format.nPortIndex = aPortIndex;
+	format.xFramerate = aFramerate;
+	format.eColorFormat = *aColorFormat;
+	format.eCompressionFormat = *aCodingType;
+
+    OMX_ERRORTYPE error = component->SetParameter(component, OMX_IndexParamVideoPortFormat, &format);
+    if(error != aExpectedError)
+        {
+        ERR_PRINTF3(_L("MosSetVideoPortFormatsL SetParameter() error 0x%X, expected 0x%X"), error, aExpectedError);
+        return EFalse;
+        }
+    return ETrue;
+	}
+
 TBool ROmxScriptTest::MosSetVideoPortDefL(const TDesC8& aComp, TInt aPortIndex, TInt aWidth, TInt aHeight, OMX_COLOR_FORMATTYPE* aColorFormat, OMX_VIDEO_CODINGTYPE* aCodingType, TInt aStride, TReal aFps, OMX_ERRORTYPE aExpectedError)
 	{
 	OMX_COMPONENTTYPE* component = ComponentByName(aComp);
@@ -1156,6 +1184,7 @@ TBool ROmxScriptTest::MosSetVideoPortDefL(const TDesC8& aComp, TInt aPortIndex, 
 	portDef.nVersion = KOmxVersion;
 	portDef.nPortIndex = aPortIndex;
 	OMX_ERRORTYPE error = component->GetParameter(component, OMX_IndexParamPortDefinition, &portDef);
+
 	if(error)
 		{
 		FailWithOmxError(_L("GetParameter()"), error);
@@ -1409,7 +1438,7 @@ TBool ROmxScriptTest::MosSetParameterUnknownIndexTypeL(const TDesC8& aComp, TInt
 	StopTest(EFail);
 	return EFalse;
 	}
-TBool ROmxScriptTest::MosDisablePort(const TDesC8& aComp, TInt aPortIndex)
+TBool ROmxScriptTest::MosDisablePort(const TDesC8& aComp, TInt aPortIndex, OMX_ERRORTYPE aExpectedError)
 	{
 	OMX_COMPONENTTYPE* component = ComponentByName(aComp);
 	if(!component)
@@ -1418,7 +1447,7 @@ TBool ROmxScriptTest::MosDisablePort(const TDesC8& aComp, TInt aPortIndex)
 		}
 
 	OMX_ERRORTYPE error = component->SendCommand(component, OMX_CommandPortDisable, aPortIndex, NULL);
-	if(error)
+    if(error != aExpectedError)
 		{
 		FailWithOmxError(aComp, _L("OMX_SendCommand(OMX_CommandPortDisable)"), error);
 		return EFalse;
@@ -1427,7 +1456,7 @@ TBool ROmxScriptTest::MosDisablePort(const TDesC8& aComp, TInt aPortIndex)
 	return ETrue;
 	}
 
-TBool ROmxScriptTest::MosEnablePort(const TDesC8& aComp, TInt aPortIndex)
+TBool ROmxScriptTest::MosEnablePort(const TDesC8& aComp, TInt aPortIndex, OMX_ERRORTYPE aExpectedError)
 	{
 	OMX_COMPONENTTYPE* component = ComponentByName(aComp);
 	if(!component)
@@ -1436,7 +1465,7 @@ TBool ROmxScriptTest::MosEnablePort(const TDesC8& aComp, TInt aPortIndex)
 		}
 
 	OMX_ERRORTYPE error = component->SendCommand(component, OMX_CommandPortEnable, aPortIndex, NULL);
-	if(error)
+	if(error != aExpectedError)
 		{
 		FailWithOmxError(aComp, _L("OMX_SendCommand(OMX_CommandPortEnable)"), error);
 		return EFalse;
@@ -1592,6 +1621,68 @@ TBool ROmxScriptTest::MosCheckConfigAudioMuteL(const TDesC8& aComp,
     }
 
 
+TBool ROmxScriptTest::MosCheckConfigCommonScaleL(const TDesC8& aComp,
+                                                 TInt aPortIndex,
+                                                 TInt aWidth, TInt aHeight, OMX_ERRORTYPE aExpectedError)
+    {
+    OMX_COMPONENTTYPE* component = ComponentByName(aComp);
+    if(!component)
+        {
+        User::Leave(KErrGeneral);
+        }
+
+    OMX_CONFIG_SCALEFACTORTYPE commonScale;
+    commonScale.nSize = sizeof(commonScale);
+    commonScale.nVersion = KOmxVersion;
+    commonScale.nPortIndex = aPortIndex;
+
+    OMX_ERRORTYPE error = component->GetConfig(component, OMX_IndexConfigCommonScale, &commonScale);
+    if(error != aExpectedError)
+        {
+        FailWithOmxError(_L("GetConfig() with unexpected error "), error);
+        return EFalse;
+        }
+
+    if (error)
+        {
+        return ETrue;
+        }
+         
+    if(commonScale.xWidth != aWidth || commonScale.xHeight != aHeight)
+        {
+        ERR_PRINTF1(_L("CommonScale not what expected."));
+        StopTest(KErrGeneral, EFail);
+        return EFalse;
+        }
+    return ETrue;
+    }
+
+TBool ROmxScriptTest::MosSetConfigCommonScaleL(const TDesC8& aComp,
+                                                 TInt aPortIndex,
+                                                 TInt aWidth, TInt aHeight, OMX_ERRORTYPE aExpectedError)
+    {
+    OMX_COMPONENTTYPE* component = ComponentByName(aComp);
+    if(!component)
+        {
+        User::Leave(KErrGeneral);
+        }
+
+    OMX_CONFIG_SCALEFACTORTYPE commonScale;
+    commonScale.nSize = sizeof(commonScale);
+    commonScale.nVersion = KOmxVersion;
+    commonScale.nPortIndex = aPortIndex;
+    commonScale.xWidth = aWidth;
+    commonScale.xHeight = aHeight;
+    
+    OMX_ERRORTYPE error = component->SetConfig(component, OMX_IndexConfigCommonScale, &commonScale);
+    if(error != aExpectedError)
+        {
+        FailWithOmxError(_L("SetConfig() with unexpected error"), error);
+        return EFalse;
+        }
+
+    return ETrue;
+    }
 
 
 TBool ROmxScriptTest::MosSetConfigAudioVolumeL(const TDesC8& aComp,

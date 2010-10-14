@@ -132,14 +132,3 @@ CPortSettingsChangeCommand(OMX_U32 aLocalPortIndex,
 	ipPortSettings(apPortSettings)
 	{
 	}
-
-#ifdef _OMXIL_COMMON_IL516C_ON
-inline
-COmxILCallbackManager::CEjectBuffersRequestCommand::
-CEjectBuffersRequestCommand(OMX_U32 aLocalOmxPortIndex)
-	:
-	CCallbackCommand(CCallbackCommand::EPriorityNormal),
-	iLocalOmxPortIndex(aLocalOmxPortIndex)
-	{
-	}
-#endif

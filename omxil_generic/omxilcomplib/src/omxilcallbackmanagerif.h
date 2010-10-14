@@ -174,20 +174,6 @@ public:
 		OMX_COMMANDTYPE aOmxCommand,
 		OMX_U32 aOmxPortIndex) = 0;
 
-#ifdef _OMXIL_COMMON_IL516C_ON
-	/**
-	   Method to request from the tunnelled component the ejection of the
-	   buffers present in one of its ports
-
-	   @param [in] aLocalOmxPortIndex The index of the local port that is
-	   tunnelled to the component that the ejection request applies to
-
-	   @return OMX_ERRORTYPE
-	*/
-	virtual OMX_ERRORTYPE EjectBuffersRequest(
-		OMX_U32 aLocalOmxPortIndex) = 0;
-#endif
-
 	};
 
 #include "omxilcallbackmanagerif.inl"

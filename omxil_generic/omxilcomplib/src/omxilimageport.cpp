@@ -410,9 +410,15 @@ RArray<OMX_COLOR_FORMATTYPE>& COmxILImagePort::GetSupportedColorFormats()
     return ipImagePortImpl->GetSupportedColorFormats();
     }
 
+#ifndef __WINSCW__
+#pragma CTC SKIP
+#endif
 EXPORT_C
 OMX_IMAGE_PARAM_PORTFORMATTYPE& COmxILImagePort::GetParamImagePortFormat()
     {
     __ASSERT_ALWAYS(ipImagePortImpl, User::Panic(KOmxILImagePortPanicCategory, 1));
     return ipImagePortImpl->GetParamImagePortFormat();
     }
+#ifndef __WINSCW__
+#pragma CTC ENDSKIP 
+#endif 

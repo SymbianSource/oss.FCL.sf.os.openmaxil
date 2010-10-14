@@ -379,9 +379,14 @@ COmxILAudioPort::DoOmxUseBuffer(OMX_HANDLETYPE aTunnelledComponent,
 									   apBuffer);
 	}
 
+#ifndef __WINSCW__
+#pragma CTC SKIP
+#endif
 EXPORT_C
 TInt COmxILAudioPort::Extension_(TUint aExtensionId, TAny *&a0, TAny *a1)
 	{
 	return COmxILPort::Extension_(aExtensionId, a0, a1);
 	}
-	
+#ifndef __WINSCW__
+#pragma CTC ENDSKIP 
+#endif 	

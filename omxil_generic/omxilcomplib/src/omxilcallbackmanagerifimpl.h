@@ -108,11 +108,6 @@ protected:
 		TUint aPortSettingsIndex,
 		const TDesC8& aPortSettings);
 
-#ifdef _OMXIL_COMMON_IL516C_ON
-	virtual OMX_ERRORTYPE DoEjectBuffersRequest(
-		OMX_U32 aLocalPortIndex);
-#endif
-
 	virtual void SignalOrPropagateBufferMarks(OMX_BUFFERHEADERTYPE* apBufferHeader,
 													   OMX_U32 aLocalPortIndex);
 

@@ -462,44 +462,6 @@ COmxILFsm::COmxILStateLoaded::PopulateBuffer(
 	{
     DEBUG_PRINTF(_L8("COmxILStateLoaded::PopulateBuffer"));
 
-
-#ifdef _OMXIL_COMMON_IL516C_ON
-
-	if (!apBuffer)
-		{
-		// ... AllocateBuffer
-		//
-		// At this point, the command requesting the transition from Loaded to
-		// Idle has not been received yet.. (see
-		// COmxILStateLoadedToIdle). Therefore, this can only be successful if
-		// the port is disabled
-		return COmxILState::PopulateBuffer(aFsm,
-									   appBufferHdr,
-									   aPortIndex,
-									   apAppPrivate,
-									   aSizeBytes,
-									   apBuffer,
-									   portPopulationCompleted);
-		}
-	else
-		{
-		//... UseBuffer...
-		OMX_ERRORTYPE omxError =
-			COmxILState::PopulateBufferV2(aFsm,
-										  appBufferHdr,
-										  aPortIndex,
-										  apAppPrivate,
-										  aSizeBytes,
-										  apBuffer,
-										  portPopulationCompleted);
-		if (apBuffer && OMX_ErrorNone == omxError)
-			{
-			DEBUG_PRINTF2(_L8("COmxILStateLoaded::PopulateBuffer : PORT [%u] : Buffer population occurring in OMX_StateLoaded"), aPortIndex);
-			}
-		return omxError;
-		}
-#else
-
 	// At this point, the command requesting the transition from Loaded to Idle
 	// has not been received yet.. (see COmxILStateLoadedToIdle). Therefore,
 	// this can only be successful if the port is disabled
@@ -510,7 +472,6 @@ COmxILFsm::COmxILStateLoaded::PopulateBuffer(
 									   aSizeBytes,
 									   apBuffer,
 									   portPopulationCompleted);
-#endif
 
 	}
 
@@ -536,11 +497,6 @@ COmxILFsm::COmxILStateLoaded::EmptyThisBuffer(COmxILFsm& aFsm,
 	{
     DEBUG_PRINTF(_L8("COmxILStateLoaded::EmptyThisBuffer"));
 
-#ifdef _OMXIL_COMMON_IL516C_ON
-	return COmxILState::EmptyThisBufferV2(aFsm,
-										apBuffer);
-#endif
-
 	return COmxILState::EmptyThisBuffer(aFsm,
 										apBuffer);
 
@@ -551,11 +507,6 @@ COmxILFsm::COmxILStateLoaded::FillThisBuffer(COmxILFsm& aFsm,
 											 OMX_BUFFERHEADERTYPE* apBuffer)
 	{
     DEBUG_PRINTF(_L8("COmxILStateLoaded::FillThisBuffer"));
-
-#ifdef _OMXIL_COMMON_IL516C_ON
-	return COmxILState::FillThisBufferV2(aFsm,
-										apBuffer);
-#endif
 
 	return COmxILState::FillThisBuffer(aFsm,
 									   apBuffer);
@@ -891,11 +842,6 @@ COmxILFsm::COmxILStateWaitForResources::EmptyThisBuffer(
 	{
     DEBUG_PRINTF(_L8("COmxILStateWaitForResources::EmptyThisBuffer"));
 
-#ifdef _OMXIL_COMMON_IL516C_ON
-	return COmxILState::EmptyThisBufferV2(aFsm,
-										apBuffer);
-#endif
-
 	return COmxILState::EmptyThisBuffer(aFsm,
 										apBuffer);
 
@@ -908,11 +854,6 @@ COmxILFsm::COmxILStateWaitForResources::FillThisBuffer(
 	OMX_BUFFERHEADERTYPE* apBuffer)
 	{
     DEBUG_PRINTF(_L8("COmxILStateWaitForResources::FillThisBuffer"));
-
-#ifdef _OMXIL_COMMON_IL516C_ON
-	return COmxILState::FillThisBufferV2(aFsm,
-										apBuffer);
-#endif
 
 	return COmxILState::FillThisBuffer(aFsm,
 									   apBuffer);

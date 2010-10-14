@@ -144,11 +144,6 @@ public:
 	OMX_ERRORTYPE BufferMarkIndication(OMX_U32 aPortIndex,
 									   OMX_PTR ipMarkData);
 
-#ifdef _OMXIL_COMMON_IL516C_ON
-	OMX_ERRORTYPE BufferEjectIndication(
-		TUint32 aPortIndex);
-#endif
-
 	OMX_ERRORTYPE ComponentRoleIndication(TUint aComponentRoleIndex);
 
 	OMX_ERRORTYPE PortSettingsChangeIndication(OMX_U32 aPortIndex,

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2008 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2008-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -74,6 +74,7 @@ public:
 			                                 const TDesC8& aSinkComp, TInt aSinkPort,
 			                                 OMX_BUFFERSUPPLIERTYPE aSupplier, 
 			                                 OMX_ERRORTYPE aExpectedSourceError, OMX_ERRORTYPE aExpectedSinkError) = 0;
+	virtual TBool MosSetVideoPortFormatsL(const TDesC8& aComp, TInt aPortIndex, OMX_COLOR_FORMATTYPE* aColorFormat, OMX_VIDEO_CODINGTYPE* aCodingType, TInt aFramerate, OMX_ERRORTYPE aExpectedError) = 0;
 	virtual TBool MosSetVideoPortDefL(const TDesC8& aComp, TInt aPortIndex, TInt aWidth, TInt aHeight, OMX_COLOR_FORMATTYPE* aColorFormat, OMX_VIDEO_CODINGTYPE* aCodingType, TInt aStride, TReal aFps, OMX_ERRORTYPE aExpectedError) = 0;
 	virtual TBool MosSetCameraOneShotL(const TDesC8& aComp, TInt aIsOneShot, OMX_ERRORTYPE aExpectedError) = 0;
 	virtual TBool MosSetCameraCaptureL(const TDesC8& aComp, TInt aPortIndex, TInt aIsCapturing, OMX_ERRORTYPE aExpectedError) = 0;
@@ -87,13 +88,15 @@ public:
 	virtual TBool MosGetParameterUnknownIndexTypeL(const TDesC8& aComp, TInt aPortIndex, OMX_METADATASCOPETYPE aScope, const TDesC8& aAtomType, TUint32 aAtomIndex, const TDesC8& aData) = 0;
 	virtual TBool MosSetParameterUnknownIndexTypeL(const TDesC8& aComp, TInt aPortIndex, OMX_METADATASCOPETYPE aScope, const TDesC8& aAtomType, TUint32 aAtomIndex, const TDesC8& aData) = 0;
 
-	virtual TBool MosDisablePort(const TDesC8& aComp, TInt aPortIndex) = 0;
-	virtual TBool MosEnablePort(const TDesC8& aComp, TInt aPortIndex) = 0;
+	virtual TBool MosDisablePort(const TDesC8& aComp, TInt aPortIndex, OMX_ERRORTYPE aExpectedError) = 0;
+	virtual TBool MosEnablePort(const TDesC8& aComp, TInt aPortIndex, OMX_ERRORTYPE aExpectedError) = 0;
 	virtual TBool MosIgnoreEventL(const TDesC8& aComp, OMX_EVENTTYPE aEvent, TUint32 nData1, TUint32 nData2) = 0;
 	virtual TBool MosSetPcmAudioPortDefL(const TDesC8& aComp, TInt aPortIndex, TInt aNumChannels, TInt aSamplingRate, TInt aBitsperSample, OMX_NUMERICALDATATYPE aNumData, OMX_ENDIANTYPE aEndian, OMX_BOOL* aInterleaved, const TDesC8* aEncoding) = 0;
 	virtual TBool MosSetConfigAudioVolumeL(const TDesC8& aComp, TInt aPortIndex, TBool aLinear, TInt aMinVolume, TInt aMaxVolume, TInt aVolume, OMX_ERRORTYPE aExpectedError) = 0;
 	virtual TBool MosCheckConfigAudioVolumeL(const TDesC8& aComp, TInt aPortIndex, TBool aLinear, TInt aMinVolume, TInt aMaxVolume, TInt aVolume) = 0;
 	virtual TBool MosCheckConfigAudioMuteL(const TDesC8& aComp, TInt aPortIndex, TBool aMute) = 0;
+	virtual TBool MosCheckConfigCommonScaleL(const TDesC8& aComp, TInt aPortIndex, TInt aWidth, TInt aHeight, OMX_ERRORTYPE aExpectedError) = 0;
+	virtual TBool MosSetConfigCommonScaleL(const TDesC8& aComp, TInt aPortIndex, TInt aWidth, TInt aHeight, OMX_ERRORTYPE aExpectedError) = 0;
 	virtual TBool MosSetConfigAudioMuteL(const TDesC8& aComp, TInt aPortIndex, TBool aMute) = 0;
 	virtual TBool MosSetAacAudioPortDefL(const TDesC8& aComp, TInt aPortIndex, TInt aNumChannels, TInt aSamplingRate, TInt aBitRate, TInt aAudioBandwidth, TInt aFrameLength, TInt aAacTools, TInt aAacErTools, TInt aProfile, TInt aStreamFormat, TInt aChannelMode) = 0;
 	virtual TBool MosSetAudioPortDefL(const TDesC8& aComp, TInt aPortIndex, OMX_AUDIO_CODINGTYPE* aCodingType, OMX_ERRORTYPE aExpectedError) = 0;

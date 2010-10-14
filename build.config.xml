@@ -42,5 +42,17 @@ Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
         </component>
       </module>
     </layer>
+
+    <layer name="test_ncp_layer">
+    	<module name="openmaxil">
+        <component name="openmaxil_plat">
+          <unit unitID="openmaxil_plat.test_api_test" name="OpenMAX IL Symbian API" mrp="" bldFile="&layer_real_source_path;/openmaxil_plat/test_api/group"/>
+        </component>
+        <component name="openmaxil_tsrc">
+          <unit unitID="tsrc.xmltestharness_test" name="OpenMAX IL xmlclient" mrp="" bldFile="&layer_real_source_path;/tsrc/xmltestharness/group"/>
+        </component>
+      </module>
+    </layer>
+
   </systemModel>
 </SystemDefinition>

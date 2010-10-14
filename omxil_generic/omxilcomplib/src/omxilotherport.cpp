@@ -374,8 +374,14 @@ EXPORT_C const OMX_OTHER_PARAM_PORTFORMATTYPE& COmxILOtherPort::GetParamOtherPor
         return ipOtherPortImpl->GetParamOtherPortFormat();   
         }
 
+#ifndef __WINSCW__
+#pragma CTC SKIP
+#endif
 EXPORT_C
 TInt COmxILOtherPort::Extension_(TUint aExtensionId, TAny *&a0, TAny *a1)
 	{
 	return COmxILPort::Extension_(aExtensionId, a0, a1);
 	}	
+#ifndef __WINSCW__
+#pragma CTC ENDSKIP 
+#endif

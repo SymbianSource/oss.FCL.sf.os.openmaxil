@@ -410,61 +410,6 @@ XOmxILCallbackManagerIfImpl::DoPortSettingsChangeNotification(
 
 	}
 
-#ifdef _OMXIL_COMMON_IL516C_ON
-OMX_ERRORTYPE
-XOmxILCallbackManagerIfImpl::DoEjectBuffersRequest(
-	OMX_U32 aLocalPortIndex)
-	{
-    DEBUG_PRINTF2(_L8("XOmxILCallbackManagerIfImpl::DoEjectBuffersRequest : "
-					  "aLocalPortIndex[%d]"), aLocalPortIndex);
-
-	__ASSERT_DEBUG(ipHandle &&
-				   ipCallbacks &&
-				   ipPortManager,
-				   User::Panic(KOmxILCallbackManagerIfImplPanicCategory, 1));
-
-	// find out whether the port is tunnelled or not
-	const TUint tunnelCount = iRegisteredTunnels.Count();
-	for (TUint i=0; i<tunnelCount; ++i)
-		{
-		if (iRegisteredTunnels[i].iLocalPortIndex ==
-			aLocalPortIndex)
-			{
-
-			OMX_COMPONENTTYPE* ipTunnelledComponent =
-				static_cast<OMX_COMPONENTTYPE*>(
-					iRegisteredTunnels[i].
-					iTunnelledComponentHandle);
-
-			__ASSERT_DEBUG(ipTunnelledComponent,
-						   User::Panic(KOmxILCallbackManagerIfImplPanicCategory, 1));
-
-			DEBUG_PRINTF3(_L8("XOmxILCallbackManagerIfImpl::DoEjectBuffersRequest : "
-							  "iTunnelledComponent [%X] iTunnelledPortIndex[%u]"),
-						  ipTunnelledComponent,
-						  iRegisteredTunnels[i].iTunnelledPortIndex);
-
-			OMX_PARAM_U32TYPE ejectBufferRequest;
-			ejectBufferRequest.nSize	  = sizeof(OMX_PARAM_U32TYPE);
-			ejectBufferRequest.nVersion	  = TOmxILSpecVersion();
-			ejectBufferRequest.nPortIndex = iRegisteredTunnels[i].iTunnelledPortIndex;
-			ejectBufferRequest.nU32		  = 1;	// .... we can define a constant to be used here
-
-			// Returned error ignored here. Cannot handle an error from the
-			// tunnelled component
-			OMX_SetConfig(ipTunnelledComponent,
-						  OMX_IndexConfigPortBufferReturnRequest,
-						  &ejectBufferRequest);
-
-			break;
-			}
-		}
-
-	return OMX_ErrorNone;
-
-	}
-#endif
-
 void
 XOmxILCallbackManagerIfImpl::SignalOrPropagateBufferMarks(
 	OMX_BUFFERHEADERTYPE* apBufferHeader,

@@ -65,8 +65,14 @@ OMX_ERRORTYPE COmxILProcessingFunction::MediaTimeIndication(const OMX_TIME_MEDIA
 	return OMX_ErrorNotImplemented;
 	}
 
+#ifndef __WINSCW__
+#pragma CTC SKIP
+#endif
 EXPORT_C
 TInt COmxILProcessingFunction::Extension_(TUint aExtensionId, TAny *&a0, TAny *a1)
 	{
 	return CBase::Extension_(aExtensionId, a0, a1);
 	}
+#ifndef __WINSCW__
+#pragma CTC ENDSKIP 
+#endif 

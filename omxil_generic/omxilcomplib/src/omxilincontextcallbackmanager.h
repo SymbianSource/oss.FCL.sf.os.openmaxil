@@ -88,11 +88,6 @@ public:
 		OMX_COMMANDTYPE aOmxCommand,
 		OMX_U32 aOmxPortIndex);
 
-#ifdef _OMXIL_COMMON_IL516C_ON
-	OMX_ERRORTYPE EjectBuffersRequest(
-		OMX_U32 aLocalOmxPortIndex);
-#endif
-
 	//
 	// Methods for Callback Notification (from MOmxILCallbackManagerIf)
 	//

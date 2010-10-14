@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2008-2009 Nokia Corporation and/or its subsidiary(-ies).
+* Copyright (c) 2008-2010 Nokia Corporation and/or its subsidiary(-ies).
 * All rights reserved.
 * This component and the accompanying materials are made available
 * under the terms of "Eclipse Public License v1.0"
@@ -530,14 +530,12 @@ void COmxScriptParser::OnStartElementL(const RTagInfo& aElement,
             OMX_ERRORTYPE expectedErrorInt = OMX_ErrorNone;
             CheckForAbortL(iCallback.MosSetCameraCaptureL(comp, portIndex, isCapturing, expectedErrorInt));
             }
-		else if(elemName == _L8("SetVideoPortDef"))
+		else if(elemName == _L8("SetVideoPortDef") || elemName == _L8("SetVideoPortFormat"))
 			{
 			const TDesC8& compPort = FindAttributeL(aAttributes, _L8("port"));
 			TPtrC8 comp;
 			TInt port;
 			ParseCompPortL(compPort, comp, port);
-			TInt width = ParseOptionalIntL(aAttributes, _L8("width"), -1);
-			TInt height = ParseOptionalIntL(aAttributes, _L8("height"), -1);
 			OMX_COLOR_FORMATTYPE colorFormat = OMX_COLOR_FormatMax;
 			OMX_COLOR_FORMATTYPE* colorFormatPtr = NULL;
 			const TDesC8* colorFormatDes = FindAttribute(aAttributes, _L8("colorFormat"));
@@ -554,14 +552,25 @@ void COmxScriptParser::OnStartElementL(const RTagInfo& aElement,
 				codingType = ParseOmxVideoCodingL(*codingDes);
 				codingTypePtr = &codingType;
 				}
+            const TDesC8* expectedError = FindAttribute(aAttributes, _L8("expectedomxerr"));
+            OMX_ERRORTYPE expectedErrorInt = OMX_ErrorNone;
+            if (expectedError)
+                {
+                expectedErrorInt = ParseOmxErrorCode(*expectedError);
+                }
+            
+            if (elemName == _L8("SetVideoPortFormat"))
+                {
+                TInt rate = ParseOptionalIntL(aAttributes, _L8("framerate"), -1);
+                CheckForAbortL(iCallback.MosSetVideoPortFormatsL(comp, port, colorFormatPtr, codingTypePtr, rate, expectedErrorInt));
+                return;
+                }
+            
+            // The rest apply to SetVideoPortDef only
+			TInt width = ParseOptionalIntL(aAttributes, _L8("width"), -1);
+            TInt height = ParseOptionalIntL(aAttributes, _L8("height"), -1);
 			TInt stride = ParseOptionalIntL(aAttributes, _L8("stride"), -1);
 
-			const TDesC8* expectedError = FindAttribute(aAttributes, _L8("expectedomxerr"));
-		    OMX_ERRORTYPE expectedErrorInt = OMX_ErrorNone;
-			if (expectedError)
-			    {
-			    expectedErrorInt = ParseOmxErrorCode(*expectedError);
-			    }
 			
 #ifdef HREF_ED_WITHOUT_FLOATING_POINT
 			CheckForAbortL(iCallback.MosSetVideoPortDefL(comp, port, width, height, colorFormatPtr, codingTypePtr, stride, 0, expectedErrorInt));
@@ -667,21 +676,28 @@ void COmxScriptParser::OnStartElementL(const RTagInfo& aElement,
 			const TDesC8& data = FindAttributeL(aAttributes, _L8("data"));
 			CheckForAbortL(iCallback.MosSetParameterUnknownIndexTypeL(comp, port, scope, atomType, atomIndex, data));			
 			}						
-		else if(elemName == _L8("DisablePort"))
+		else if(elemName == _L8("DisablePort") || elemName == _L8("EnablePort"))
 			{
 			const TDesC8& port = FindAttributeL(aAttributes, _L8("port"));
 			TPtrC8 comp;
 			TInt portIndex;
 			ParseCompPortL(port, comp, portIndex);
-			CheckForAbortL(iCallback.MosDisablePort(comp, portIndex));
-			}
-		else if(elemName == _L8("EnablePort"))
-			{
-			const TDesC8& port = FindAttributeL(aAttributes, _L8("port"));
-			TPtrC8 comp;
-			TInt portIndex;
-			ParseCompPortL(port, comp, portIndex);
-			CheckForAbortL(iCallback.MosEnablePort(comp, portIndex));
+
+			const TDesC8* expectedError = FindAttribute(aAttributes, _L8("expectedomxerr"));
+			OMX_ERRORTYPE expectedErrorInt = OMX_ErrorNone;
+			if (expectedError)
+			    {
+			    expectedErrorInt = ParseOmxErrorCode(*expectedError);
+			    }
+
+			if (elemName == _L8("EnablePort"))
+			    {
+			    CheckForAbortL(iCallback.MosEnablePort(comp, portIndex, expectedErrorInt));
+			    }
+			else
+			    {
+			    CheckForAbortL(iCallback.MosDisablePort(comp, portIndex, expectedErrorInt));
+			    }
 			}
 		else if(elemName == _L8("IgnoreEvent"))
 			{
@@ -828,6 +844,31 @@ void COmxScriptParser::OnStartElementL(const RTagInfo& aElement,
 		        User::Leave(KErrArgument);
 		        }
 		    CheckForAbortL(iCallback.MosCheckConfigAudioMuteL(comp, port, mute));
+		    }   
+		else if(elemName == _L8("CheckCommonScale") || elemName == _L8("SetCommonScale"))
+		    {
+		    const TDesC8& compPort = FindAttributeL(aAttributes, _L8("port"));
+		    TPtrC8 comp;
+		    TInt port;
+		    ParseCompPortL(compPort, comp, port);
+		    TInt width = ParseOptionalIntL(aAttributes, _L8("width"), -1);
+		    TInt height = ParseOptionalIntL(aAttributes, _L8("height"), -1);
+		    
+		    const TDesC8* expectedError = FindAttribute(aAttributes, _L8("expectedomxerr"));
+		    OMX_ERRORTYPE expectedErrorInt = OMX_ErrorNone;
+		    if (expectedError)
+		        {
+		        expectedErrorInt = ParseOmxErrorCode(*expectedError);
+		        }
+
+		    if (elemName == _L8("CheckCommonScale"))
+		        {
+		        CheckForAbortL(iCallback.MosCheckConfigCommonScaleL(comp, port, width, height, expectedErrorInt));
+		        }
+		    else
+		        {
+		        CheckForAbortL(iCallback.MosSetConfigCommonScaleL(comp, port, width, height, expectedErrorInt));
+		        }
 		    }   
 		else if(elemName == _L8("SetAudioVolume"))
             {

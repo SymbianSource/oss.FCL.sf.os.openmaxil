@@ -26,6 +26,9 @@
 "\epoc32\winscw\c\omxil\tef\te_omx_filesink_other.xml"-"c:\omxil\tef\te_omx_filesink_other.xml"
 "\epoc32\winscw\c\omxil\tef\te_omx_filesink_video.script"-"c:\omxil\tef\te_omx_filesink_video.script"
 "\epoc32\winscw\c\omxil\tef\te_omx_filesink_video.xml"-"c:\omxil\tef\te_omx_filesink_video.xml"
+"\epoc32\winscw\c\omxil\tef\te_omx_filesink_graphic.script"-"c:\omxil\tef\te_omx_filesink_graphic.script"
+"\epoc32\winscw\c\omxil\tef\te_omx_filesink_graphic.xml"-"c:\omxil\tef\te_omx_filesink_graphic.xml"
+
 
 ; The following is commented out because we don't have OMX.SYMBIAN.OTHER.CONTAINER_DEMUXER.3GP in Vasco
 ; "\epoc32\winscw\c\omxil\tef\te_omx_filesink_video_compatibility.script"-"c:\omxil\tef\te_omx_filesink_video_compatibility.script"

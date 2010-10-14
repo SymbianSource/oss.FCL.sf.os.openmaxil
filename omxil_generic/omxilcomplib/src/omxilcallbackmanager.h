@@ -57,9 +57,6 @@ NONSHARABLE_CLASS(COmxILCallbackManager) :
 	class CEventCallbackCommand;
 	class CBufferDoneCallbackCommand;
 	class CPortSettingsChangeCommand;
-#ifdef _OMXIL_COMMON_IL516C_ON
-	class CEjectBuffersRequestCommand;
-#endif
 	// Note that the following friends don't break COmxILCallbackManager's
 	// interface as all friends below are COmxILCallbackManager's private
 	// nested classes and therefore they are logically part of
@@ -72,9 +69,6 @@ NONSHARABLE_CLASS(COmxILCallbackManager) :
 	friend class CEventCallbackCommand;
 	friend class CBufferDoneCallbackCommand;
 	friend class CPortSettingsChangeCommand;
-#ifdef _OMXIL_COMMON_IL516C_ON
-	friend class CEjectBuffersRequestCommand;
-#endif
 
 public:
 
@@ -130,11 +124,6 @@ public:
 	OMX_ERRORTYPE CommandCompleteNotification(
 		OMX_COMMANDTYPE aOmxCommand,
 		OMX_U32 aOmxPortIndex);
-
-#ifdef _OMXIL_COMMON_IL516C_ON
-	OMX_ERRORTYPE EjectBuffersRequest(
-		OMX_U32 aLocalOmxPortIndex);
-#endif
 
 	//
 	// Methods for Callback Notification (from MOmxILCallbackManagerIf)
@@ -499,28 +488,6 @@ private:
 	HBufC8* ipPortSettings; // This is owned by this class
 
 	};
-
-#ifdef _OMXIL_COMMON_IL516C_ON
-/**
-  Callback Manager's command class for requesting buffer ejection from tunnelled component.
- */
-class COmxILCallbackManager::CEjectBuffersRequestCommand :
-	public COmxILCallbackManager::CCallbackCommand
-	{
-
-public:
-
-	inline CEjectBuffersRequestCommand(OMX_U32 aLocalOmxPortIndex);
-
-	void operator()(COmxILCallbackManager& aCbMgr, TBool& aHasBeenDeferred);
-
-private:
-
-	OMX_U32 iLocalOmxPortIndex;
-
-	};
-#endif
-
 
 #include "omxilcallbackmanager.inl"
 

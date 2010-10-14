@@ -678,12 +678,17 @@ EXPORT_C OMX_U32& COmxILPort::GetTunnelledPort()
 	return ipPortImpl->GetTunnelledPort();
 	}
 
+#ifndef __WINSCW__
+#pragma CTC SKIP
+#endif
 EXPORT_C
 TInt COmxILPort::Extension_(TUint aExtensionId, TAny *&a0, TAny *a1)
 	{
 	return CBase::Extension_(aExtensionId, a0, a1);
 	}	
-
+#ifndef __WINSCW__
+#pragma CTC ENDSKIP 
+#endif
 
 
 

@@ -302,25 +302,6 @@ COmxILCallbackManager::CommandCompleteNotification(OMX_COMMANDTYPE aOmxCommand,
 
 	}
 
-#ifdef _OMXIL_COMMON_IL516C_ON
-OMX_ERRORTYPE
-COmxILCallbackManager::EjectBuffersRequest(OMX_U32 aLocalOmxPortIndex)
-	{
-    DEBUG_PRINTF2(_L8("COmxILCallbackManager::EjectBuffersRequest : aLocalOmxPortIndex [%u]"), aLocalOmxPortIndex);
-
-	CEjectBuffersRequestCommand* pEjectCBack =
-		new CEjectBuffersRequestCommand(aLocalOmxPortIndex);
-	if (!pEjectCBack || (iCommandQueue.Send(pEjectCBack) != KErrNone))
-		{
-		delete pEjectCBack;
-		HandleInsufficientResources();
-		}
-
-	return OMX_ErrorNone;
-
-	}
-#endif
-
 OMX_ERRORTYPE
 COmxILCallbackManager::ErrorEventNotification(OMX_ERRORTYPE aOmxError)
 	{
@@ -1063,22 +1044,3 @@ COmxILCallbackManager::CPortSettingsChangeCommand::operator()(
 		}
 
 	}
-
-#ifdef _OMXIL_COMMON_IL516C_ON	
-void
-COmxILCallbackManager::CEjectBuffersRequestCommand::operator()(
-	COmxILCallbackManager& aCbMgr, TBool& /* aHasBeenDeferred */)
-	{
-    DEBUG_PRINTF3(_L8("CEjectBuffersRequestCommand::operator() : Handle[%X], iLocalOmxPortIndex=[%u]"),
-				  aCbMgr.ipHandle, iLocalOmxPortIndex);
-
-	OMX_ERRORTYPE omxError =
-		aCbMgr.DoEjectBuffersRequest(iLocalOmxPortIndex);
-
-	if (OMX_ErrorInsufficientResources == omxError)
-		{
-		aCbMgr.HandleInsufficientResources();
-		}
-
-	}
-#endif //_OMXIL_COMMON_IL516C_ON
